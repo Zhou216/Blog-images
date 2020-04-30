@@ -1,0 +1,118 @@
+[tip type="red"]
+注意：不是很推荐使用GitHub托管，速度慢而且有时候可能会被墙，还是比较推荐部署在国内的gitee或者coding之类的平台...
+后面我会更新一篇如何部署到coding的教程，双线部署，确保国内外访问速度XD
+[/tip]
+
+俗话说建博客一时爽，一直建站一直爽
+
+之前就一直想用Github提供的服务搭一个静态博客来玩玩，可惜我只有一台iPad能用...（顺便吐槽一下，垃圾iOS至今不支持webp，所以我的网站才没有实施全站图片webp）
+
+突发奇想，我可以利用云电脑来配置Hexo！
+
+说干就干，租了一周的烂烂配置云电脑（20G win7-32位），钱包少了两块钱
+
+### 安装Git以及Node-JS ###
+在官方页面下载就好了，由于我这里系统只有32位，Git就只能下载x32版本了，而NodeJS是x86，不用考虑这个问题
+
+下载下来安装然后一直下一步就好啦！
+
+### 检查是否安装成功 ###
+两个都安装好了之后，打开Git并运行如下指令
+```
+node -v
+npm -v
+```
+检查git和nodejs是否正常
+
+### 设置GitHub以及SSH Key ###
+首先，我就假设你已经有了一个自己的GitHub帐号，没有的请自己注册
+
+#### 我们来新建一个仓库 ####
+进入GitHub -> New repository，新建一个叫XXXX.github.io（XXXX为你想要的前缀）的仓库，然后点击创建即可
+
+#### 设置 SSH Key ####
+在Git里面输入如下命令：
+
+```
+ssh-keygen -t rsa -C "你的邮箱地址"
+```
+
+然后连击三次回车，就会在C:\Users\你的用户名\.ssh下生成一个包含SSH Key的目录
+
+进入这个目录并打开目录下的id_rsa.pub，由于这台云电脑里面没有其他的文本编辑器，我就使用无敌的记事本来打开了
+
+打开之后，将里面的所有内容复制起来
+
+然后进入Github -> Settings -> SSH and GPG keys -> New SSH key这个地方新建一个SSH Key ，标题随意，Key填入你刚才复制的内容，然后保存
+
+#### 设置Git ####
+在Git中运行如下命令
+```
+git config --global user.name "你的 GitHub 用户名"
+git config --global user.email "你的 GitHub 注册邮箱地址"
+```
+之后看看是否成功，运行如下命令
+```
+ssh -T git@github.com
+```
+如果弹出Are you sure you want to continue connecting (yes/no)?这一问题，输入yes并敲击回车
+等待配置成功
+
+### 安装Hexo ###
+在Git中运行如下命令安装Hexo
+```
+npm install -g hexo
+```
+运行后可能需要一段时间的等待，去喝杯水
+
+提示 + hexo@版本号 就安装成功啦～
+
+### 初始化Hexo ###
+在你想放Hexo的地方新建一个文件夹，由于我的云电脑只有c盘，我就放在c:\hexo了
+
+右键这个文件夹选择Git Bash启动，然后运行如下命令来导入hexo
+```
+hexo init
+```
+若显示了 INFO Start blogging with Hexo! 这条讯息，那就代表你成功了
+
+### 更换主题 ###
+接下来先不急着浏览网站，先给自己换个主题看看
+
+我这里使用大名鼎鼎的Next主题来做演示
+
+由于我这边无法使用git clone命令，我只能下载安装包手动拷贝到theme文件夹进行安装
+
+拷贝到theme文件夹后修改主题文件夹名称为next，接下来修改hexo根目录的_config.yml中的theme: landscape为theme :next
+
+对了，我们这边顺便修改一下站点名称以及默认主题，一步到位，以免出现各种奇奇怪怪的问题
+
+站点名称在# Site下的title: Hexo这里修改，站长在author这里修改，将language修改为zh-Hans（有的主题是修改为zh-cn）
+
+#### 修改配置 ####
+用记事本打开_config.yml，找到deploy:这部分并修改为
+```
+deploy:
+  type: git
+  repo: git@github.com:你的 GitHub username/你的 GitHub username.github.io.git
+  branch: master
+```
+保存即可
+
+### 安装插件 ###
+在hexo站点下Git如下命令
+```
+npm install hexo-deployer-git --save
+```
+### 将网站部署到Github上 ###
+在hexo目录下Git如下命令
+```
+hexo d
+```
+部署完成后会显示INFO Deploy done: git
+接下来就可以进行访问了
+进入你刚才取的域名即可（有时候需要梯子才能正常浏览）
+
+写文章和绑定域名我觉得没啥必要写...自己研究去吧
+
+参考：让我们用 GitHub Pages 搭建一个 Hexo 站点 ——FlyingSky
